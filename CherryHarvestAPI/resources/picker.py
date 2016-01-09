@@ -1,4 +1,5 @@
 from CherryHarvestAPI import models, app
+from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
@@ -46,6 +47,7 @@ class Pickers(Resource):
         return pickers
 
     @marshal_with(picker_fields)
+    @auth.login_required
     def post(self):
         args = picker_parser.parse_args()
         picker = models.Picker(**args)
@@ -66,6 +68,7 @@ class Picker(Resource):
         return picker
 
     @marshal_with(picker_fields)
+    @auth.login_required
     def patch(self, id):
         args = picker_parser.parse_args()
         picker = models.Picker.query.get(id)
@@ -78,6 +81,7 @@ class Picker(Resource):
         return picker
 
     @marshal_with(picker_fields)
+    @auth.login_required
     def put(self, id):
         args = picker_parser.parse_args()
         picker = models.Picker.query.get(id)
@@ -88,6 +92,7 @@ class Picker(Resource):
         db_session.commit()
         return picker
 
+    @auth.login_required
     def delete(self, id):
         picker = models.Picker.query.get(id)
         if not picker:

@@ -1,3 +1,4 @@
+from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.resources.common import NestedWithEmpty
@@ -23,6 +24,7 @@ class PickerNumbers(Resource):
         return picker_numbers
 
     @marshal_with(picker_number_fields)
+    @auth.login_required
     def post(self):
         args = picker_number_parser.parse_args()
         picker_number = models.PickerNumber(**args)
@@ -44,6 +46,7 @@ class PickerNumber(Resource):
         return picker_number
 
     @marshal_with(picker_number_fields)
+    @auth.login_required
     def patch(self, id):
         args = picker_number_parser.parse_args()
         picker_number = models.PickerNumber.query.get(id)
@@ -56,6 +59,7 @@ class PickerNumber(Resource):
         return picker_number
 
     @marshal_with(picker_number_fields)
+    @auth.login_required
     def put(self, id):
         args = picker_number_parser.parse_args()
         picker_number = models.PickerNumber.query.get(id)
@@ -66,6 +70,7 @@ class PickerNumber(Resource):
         db_session.commit()
         return picker_number
 
+    @auth.login_required
     def delete(self, id):
         picker_number = models.PickerNumber.query.get(id)
         if not picker_number:

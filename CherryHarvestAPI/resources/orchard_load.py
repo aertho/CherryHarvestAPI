@@ -1,6 +1,7 @@
 from copy import copy
 
 from CherryHarvestAPI import models
+from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI.resources.common import simple_lug_fields
 from dateutil import parser
@@ -30,6 +31,7 @@ class OrchardLoads(Resource):
         return loads
 
     @marshal_with(Resource)
+    @auth.login_required
     def post(self):
         args = load_parser.parse_args()
         load = models.OrchardLoad(**args)
@@ -55,6 +57,7 @@ class OrchardLoad(Resource):
             return abort(404)
         return load
 
+    @auth.login_required
     def delete(self, id):
         load = models.OrchardLoad.query.get(id)
         if not load:

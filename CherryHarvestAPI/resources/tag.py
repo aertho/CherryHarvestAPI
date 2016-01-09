@@ -1,3 +1,4 @@
+from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.resources.common import NestedWithEmpty
@@ -25,6 +26,7 @@ class Tags(Resource):
         return tags
 
     @marshal_with(tag_fields)
+    @auth.login_required
     def post(self):
         args = tag_parser.parse_args()
         tag = models.Tag(**args)
@@ -46,6 +48,7 @@ class Tag(Resource):
         return tag
 
     @marshal_with(tag_fields)
+    @auth.login_required
     def patch(self, epc):
         args = tag_parser.parse_args()
         print args
@@ -61,6 +64,7 @@ class Tag(Resource):
         return tag
 
     @marshal_with(tag_fields)
+    @auth.login_required
     def put(self, epc):
         args = tag_parser.parse_args()
         tag = models.Tag.query.get(epc)
@@ -71,6 +75,7 @@ class Tag(Resource):
         db_session.commit()
         return tag
 
+    @auth.login_required
     def delete(self, epc):
         tag = models.Tag.query.get(epc)
         if not tag:

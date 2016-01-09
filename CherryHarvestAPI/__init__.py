@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 api = Api(app)
 
-from CherryHarvestAPI.resources import api_root, lug, picker,block, orchard_load, farm_load, tag, picker_number, lug_picker
+from CherryHarvestAPI.resources import api_root, lug, picker,block, orchard_load, farm_load, tag, picker_number, today
 
 api.add_resource(api_root.APIRoot, '/', endpoint='api_root')
 api.add_resource(lug.Lugs, '/lugs/', endpoint='lugs')
@@ -33,6 +33,6 @@ api.add_resource(tag.Tag, '/tags/<epc>/', endpoint='tag')
 api.add_resource(picker_number.PickerNumbers, '/picker-numbers/', endpoint='picker_numbers')
 api.add_resource(picker_number.PickerNumber, '/picker-numbers/<int:id>/', endpoint='picker_number')
 
-
+api.add_resource(today.Today, '/today/', endpoint='today')
 
 

@@ -1,3 +1,4 @@
+from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.resources.common import NestedWithEmpty
@@ -62,6 +63,7 @@ class Lugs(Resource):
         return lugs
 
     @marshal_with(lug_fields)
+    @auth.login_required
     def post(self):
         args = lug_parser.parse_args()
         lug = models.Lug(**args)
@@ -83,6 +85,7 @@ class Lug(Resource):
         return lug
 
     @marshal_with(lug_fields)
+    @auth.login_required
     def patch(self, id):
         args = lug_parser.parse_args()
         lug = models.Lug.query.get(id)
@@ -95,6 +98,7 @@ class Lug(Resource):
         return lug
 
     @marshal_with(lug_fields)
+    @auth.login_required
     def put(self, id):
         args = lug_parser.parse_args()
         lug = models.Lug.query.get(id)
@@ -105,6 +109,7 @@ class Lug(Resource):
         db_session.commit()
         return lug
 
+    @auth.login_required
     def delete(self, id):
         lug = models.Lug.query.get(id)
         if not lug:
@@ -122,6 +127,7 @@ class LugPickers(Resource):
         return lug.lug_pickers
 
     @marshal_with(lug_picker_fields)
+    @auth.login_required
     def post(self, id):
         args = lug_picker_parser.parse_args()
         lug = models.Lug.query.get(id)

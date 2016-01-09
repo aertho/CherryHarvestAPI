@@ -1,4 +1,5 @@
 from CherryHarvestAPI import models
+from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
@@ -30,6 +31,7 @@ class Blocks(Resource):
         return blocks
 
     @marshal_with(block_fields)
+    @auth.login_required()
     def post(self):
         args = block_parser.parse_args()
         block = models.Block(**args)
@@ -50,6 +52,7 @@ class Block(Resource):
         return block
 
     @marshal_with(block_fields)
+    @auth.login_required
     def patch(self, id):
         args = block_parser.parse_args()
         block = models.Block.query.get(id)
@@ -62,6 +65,7 @@ class Block(Resource):
         return block
 
     @marshal_with(block_fields)
+    @auth.login_required
     def put(self, id):
         args = block_parser.parse_args()
         block = models.Block.query.get(id)
@@ -72,6 +76,7 @@ class Block(Resource):
         db_session.commit()
         return block
 
+    @auth.login_required
     def delete(self, id):
         block = models.Block.query.get(id)
         if not block:
