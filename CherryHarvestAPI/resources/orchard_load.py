@@ -40,5 +40,12 @@ class OrchardLoads(load.Loads):
 class OrchardLoad(load.Load):
     orchard_load_fields = _orchard_load_fields
 
+    @marshal_with(_orchard_load_fields)
+    def get(self, id):
+        load = models.OrchardLoad.query.get(id)
+        if not load:
+            return abort(404)
+        return load
+
 class OrchardLoadLugs(load.LoadLugs):
     pass
