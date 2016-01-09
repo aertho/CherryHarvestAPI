@@ -23,8 +23,8 @@ class PickerNumbers(Resource):
         picker_numbers = models.PickerNumber.query.all()
         return picker_numbers
 
-    @marshal_with(picker_number_fields)
     @auth.login_required
+    @marshal_with(picker_number_fields)
     def post(self):
         args = picker_number_parser.parse_args()
         picker_number = models.PickerNumber(**args)
