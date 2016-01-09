@@ -2,29 +2,36 @@ from copy import copy
 
 from CherryHarvestAPI import models
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI.resources import load
 from CherryHarvestAPI.resources.common import simple_lug_fields
 from dateutil import parser
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
 import regex
 
-_orchard_load_fields = copy(load.outer_load_fields)
-# _orchard_load_fields['lugs'].endpoint = 'orchard_load_lugs'
+orchard_load_fields = {
+    'id' : fields.Integer,
+    'net_weight' : fields.Float,
+    'departure_time' : fields.DateTime,
+    'arrival_time' : fields.DateTime,
+    # 'destination' : fields.String,
+    # 'lugs' : fields.Url('load_lugs', absolute=True, scheme=app.config['SCHEME'])
+}
 
+load_parser = reqparse.RequestParser()
+load_parser.add_argument('departure_time')
+load_parser.add_argument('arrival_time')
 
+class OrchardLoads(Resource):
+    orchard_load_fields = orchard_load_fields
 
-class OrchardLoads(load.Loads):
-    orchard_load_fields = _orchard_load_fields
-
-    @marshal_with(_orchard_load_fields)
+    @marshal_with(orchard_load_fields)
     def get(self):
         loads = models.OrchardLoad.query.all()
         return loads
 
-    @marshal_with(orchard_load_fields)
+    @marshal_with(Resource)
     def post(self):
-        args = self.load_parser.parse_args()
+        args = load_parser.parse_args()
         load = models.OrchardLoad(**args)
         if load.departure_time:
             load.departure_time = parser.parse(load.departure_time)
@@ -38,10 +45,10 @@ class OrchardLoads(load.Loads):
             return {'error' : e.message}, 409
         return load
     
-class OrchardLoad(load.Load):
-    orchard_load_fields = _orchard_load_fields
+class OrchardLoad(Resource):
+    orchard_load_fields = orchard_load_fields
 
-    @marshal_with(_orchard_load_fields)
+    @marshal_with(orchard_load_fields)
     def get(self, id):
         load = models.OrchardLoad.query.get(id)
         if not load:
@@ -56,7 +63,7 @@ class OrchardLoad(load.Load):
         db_session.commit()
         return '', 204
 
-class OrchardLoadLugs(load.LoadLugs):
+class OrchardLoadLugs(Resource):
     @marshal_with(simple_lug_fields)
     def get(self, id):
         load = models.OrchardLoad.query.get(id)
