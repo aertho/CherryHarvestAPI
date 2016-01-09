@@ -15,7 +15,7 @@ except KeyError:
 try:
     SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 except KeyError:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://cha:cha3145@localhost:5432/cha'
 
 DATABASE_CONNECT_OPTIONS = {}
 
