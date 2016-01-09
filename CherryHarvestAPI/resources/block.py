@@ -31,7 +31,7 @@ class Blocks(Resource):
         return blocks
 
     @marshal_with(block_fields)
-    @auth.login_required()
+    @auth.login_required
     def post(self):
         args = block_parser.parse_args()
         block = models.Block(**args)
