@@ -47,5 +47,13 @@ class OrchardLoad(load.Load):
             return abort(404)
         return load
 
+    def delete(self, id):
+        load = models.OrchardLoad.query.get(id)
+        if not load:
+            return abort(404)
+        db_session.delete(load)
+        db_session.commit()
+        return '', 204
+
 class OrchardLoadLugs(load.LoadLugs):
     pass
