@@ -4,6 +4,7 @@ from CherryHarvestAPI.database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Enum, BigInteger
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship, backref
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Picker(Base):
@@ -117,3 +118,19 @@ class Tag(Base):
 
     current_picker_number = relationship(PickerNumber, backref=backref('current_cards'))
     current_lug = relationship(Lug)
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    username = Column(String(32), index=True)
+    password_hash = Column(String(128))
+
+    def __init__(self, username, password):
+        self.username = username
+        self.set_password(password)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
