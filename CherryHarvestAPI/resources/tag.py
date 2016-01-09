@@ -25,8 +25,8 @@ class Tags(Resource):
         tags = models.Tag.query.all()
         return tags
 
-    @marshal_with(tag_fields)
     @auth.login_required
+    @marshal_with(tag_fields)
     def post(self):
         args = tag_parser.parse_args()
         tag = models.Tag(**args)
@@ -47,8 +47,8 @@ class Tag(Resource):
             return abort(404)
         return tag
 
-    @marshal_with(tag_fields)
     @auth.login_required
+    @marshal_with(tag_fields)
     def patch(self, epc):
         args = tag_parser.parse_args()
         print args
@@ -63,8 +63,8 @@ class Tag(Resource):
         db_session.commit()
         return tag
 
-    @marshal_with(tag_fields)
     @auth.login_required
+    @marshal_with(tag_fields)
     def put(self, epc):
         args = tag_parser.parse_args()
         tag = models.Tag.query.get(epc)

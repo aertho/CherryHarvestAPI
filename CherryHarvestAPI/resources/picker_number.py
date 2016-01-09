@@ -45,8 +45,8 @@ class PickerNumber(Resource):
             return abort(404)
         return picker_number
 
-    @marshal_with(picker_number_fields)
     @auth.login_required
+    @marshal_with(picker_number_fields)
     def patch(self, id):
         args = picker_number_parser.parse_args()
         picker_number = models.PickerNumber.query.get(id)
@@ -58,8 +58,8 @@ class PickerNumber(Resource):
         db_session.commit()
         return picker_number
 
-    @marshal_with(picker_number_fields)
     @auth.login_required
+    @marshal_with(picker_number_fields)
     def put(self, id):
         args = picker_number_parser.parse_args()
         picker_number = models.PickerNumber.query.get(id)

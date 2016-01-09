@@ -30,8 +30,8 @@ class OrchardLoads(Resource):
         loads = models.OrchardLoad.query.all()
         return loads
 
-    @marshal_with(Resource)
     @auth.login_required
+    @marshal_with(Resource)
     def post(self):
         args = load_parser.parse_args()
         load = models.OrchardLoad(**args)

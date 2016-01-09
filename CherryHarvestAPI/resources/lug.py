@@ -62,8 +62,8 @@ class Lugs(Resource):
         lugs = models.Lug.query.all()
         return lugs
 
-    @marshal_with(lug_fields)
     @auth.login_required
+    @marshal_with(lug_fields)
     def post(self):
         args = lug_parser.parse_args()
         lug = models.Lug(**args)
@@ -84,8 +84,8 @@ class Lug(Resource):
             return abort(404)
         return lug
 
-    @marshal_with(lug_fields)
     @auth.login_required
+    @marshal_with(lug_fields)
     def patch(self, id):
         args = lug_parser.parse_args()
         lug = models.Lug.query.get(id)
@@ -97,8 +97,8 @@ class Lug(Resource):
         db_session.commit()
         return lug
 
-    @marshal_with(lug_fields)
     @auth.login_required
+    @marshal_with(lug_fields)
     def put(self, id):
         args = lug_parser.parse_args()
         lug = models.Lug.query.get(id)
@@ -126,8 +126,8 @@ class LugPickers(Resource):
             return abort(404)
         return lug.lug_pickers
 
-    @marshal_with(lug_picker_fields)
     @auth.login_required
+    @marshal_with(lug_picker_fields)
     def post(self, id):
         args = lug_picker_parser.parse_args()
         lug = models.Lug.query.get(id)

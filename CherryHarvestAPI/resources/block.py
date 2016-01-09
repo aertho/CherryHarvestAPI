@@ -30,8 +30,8 @@ class Blocks(Resource):
         print blocks
         return blocks
 
-    @marshal_with(block_fields)
     @auth.login_required
+    @marshal_with(block_fields)
     def post(self):
         args = block_parser.parse_args()
         block = models.Block(**args)
@@ -51,8 +51,8 @@ class Block(Resource):
             return abort(404)
         return block
 
-    @marshal_with(block_fields)
     @auth.login_required
+    @marshal_with(block_fields)
     def patch(self, id):
         args = block_parser.parse_args()
         block = models.Block.query.get(id)
@@ -64,8 +64,8 @@ class Block(Resource):
         db_session.commit()
         return block
 
-    @marshal_with(block_fields)
     @auth.login_required
+    @marshal_with(block_fields)
     def put(self, id):
         args = block_parser.parse_args()
         block = models.Block.query.get(id)

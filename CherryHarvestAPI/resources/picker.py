@@ -46,8 +46,8 @@ class Pickers(Resource):
         pickers = models.Picker.query.all()
         return pickers
 
-    @marshal_with(picker_fields)
     @auth.login_required
+    @marshal_with(picker_fields)
     def post(self):
         args = picker_parser.parse_args()
         picker = models.Picker(**args)
@@ -67,8 +67,8 @@ class Picker(Resource):
             return abort(404)
         return picker
 
-    @marshal_with(picker_fields)
     @auth.login_required
+    @marshal_with(picker_fields)
     def patch(self, id):
         args = picker_parser.parse_args()
         picker = models.Picker.query.get(id)
@@ -80,8 +80,8 @@ class Picker(Resource):
         db_session.commit()
         return picker
 
-    @marshal_with(picker_fields)
     @auth.login_required
+    @marshal_with(picker_fields)
     def put(self, id):
         args = picker_parser.parse_args()
         picker = models.Picker.query.get(id)
