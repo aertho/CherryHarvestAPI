@@ -16,7 +16,7 @@ class Picker(Base):
     first_name = Column(String(32))
     last_name = Column(String(32))
     pay_rate = Column(Float)
-    pay_type = Column(Enum(*PAY_TYPES, name='PayTypes'))
+    pay_type = Column(String(16))
     mobile_number = Column(String(16))
     email = Column(String(64))
 
@@ -41,7 +41,7 @@ class Block(Base):
     id = Column(Integer, primary_key=True)
     variety = Column(String)
     plant_year = Column(Integer)
-    orientation = Column(Enum(*ORIENTATIONS, name='Orientations'))
+    orientation = Column(String(16))
 
 
 class Load(Base):
@@ -83,7 +83,7 @@ class Lug(Base):
     id = Column(Integer, primary_key=True)
 
     weight = Column(Float)
-    current_status = Column(Enum('orchard', 'farm', 'gone', name='Statuses'))
+    current_status = Column(String(16))
 
     block_id = Column(Integer, ForeignKey(Block.id))
     orchard_load_id = Column(Integer, ForeignKey(OrchardLoad.id))
