@@ -21,6 +21,7 @@ orchard_load_fields = {
 load_parser = reqparse.RequestParser()
 load_parser.add_argument('departure_time')
 load_parser.add_argument('arrival_time')
+load_parser.add_argument('lugs', list)
 
 class OrchardLoads(Resource):
     orchard_load_fields = orchard_load_fields
