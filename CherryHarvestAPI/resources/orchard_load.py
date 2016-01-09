@@ -3,6 +3,7 @@ from copy import copy
 from CherryHarvestAPI import models
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI.resources import load
+from CherryHarvestAPI.resources.common import simple_lug_fields
 from dateutil import parser
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
@@ -47,5 +48,18 @@ class OrchardLoad(load.Load):
             return abort(404)
         return load
 
+    def delete(self, id):
+        load = models.OrchardLoad.query.get(id)
+        if not load:
+            return abort(404)
+        db_session.delete(load)
+        db_session.commit()
+        return '', 204
+
 class OrchardLoadLugs(load.LoadLugs):
-    pass
+    @marshal_with(simple_lug_fields)
+    def get(self, id):
+        load = models.OrchardLoad.query.get(id)
+        if not load:
+            return abort(404)
+        return load.lugs
