@@ -1,5 +1,7 @@
 from copy import copy
 
+import datetime
+
 from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
@@ -52,9 +54,15 @@ class OrchardLoads(Resource):
             args['lugs'] = []
         load = models.OrchardLoad(**args)
         if load.departure_time:
-            load.departure_time = parser.parse(load.departure_time)
+            try:
+                load.departure_time = parser.parse(load.departure_time)
+            except ValueError:
+                load.departure_time = datetime.datetime.now()
         if load.arrival_time:
-            load.arrival_time = parser.parse(load.arrival_time)
+            try:
+                load.arrival_time = parser.parse(load.arrival_time)
+            except ValueError:
+                load.arrival_time = datetime.datetime.now()
         try:
             db_session.add(load)
             db_session.commit()
@@ -98,9 +106,15 @@ class OrchardLoad(Resource):
             if value:
                 setattr(load, attr, value)
         if load.departure_time:
-            load.departure_time = parser.parse(load.departure_time)
+            try:
+                load.departure_time = parser.parse(load.departure_time)
+            except ValueError:
+                load.departure_time = datetime.datetime.now()
         if load.arrival_time:
-            load.arrival_time = parser.parse(load.arrival_time)
+            try:
+                load.arrival_time = parser.parse(load.arrival_time)
+            except ValueError:
+                load.arrival_time = datetime.datetime.now()
         try:
             db_session.add(load)
             db_session.commit()

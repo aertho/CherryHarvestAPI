@@ -46,25 +46,25 @@ def sync_db():
     #     if r.status_code not in xrange(200,300):
     #         print r.status_code
 
-    for l in OrchardLoad.query.all():
-        j = {'id':l.id,
-             'lugs' : [{
-                'id' : lug.id,
-                'block_id' : lug.block_id,
-                'weight' : lug.weight,
-                'lug_pickers' : [{'picker_id':lp.picker_id,
-                                  'contribution':lp.contribution}
-                                 for lp in lug.lug_pickers]}
-                       for lug in l.lugs],
-             'arrival_time' : str(l.arrival_time)}
-        r = requests.post(urls['orchard_loads'], json=j, headers=HEADERS, auth=auth)
-        if r.status_code == 409:
-            print '{} already exists'.format(l.id)
-            r = requests.patch('{}{}/'.format(urls['orchard_loads'],l.id),json=j, headers=HEADERS, auth=auth)
-        if r.status_code not in xrange(200,300):
-            print r.status_code
-            print r.text
-            break
+    # for l in OrchardLoad.query.all():
+    #     j = {'id':l.id,
+    #          'lugs' : [{
+    #             'id' : lug.id,
+    #             'block_id' : lug.block_id,
+    #             'weight' : lug.weight,
+    #             'lug_pickers' : [{'picker_id':lp.picker_id,
+    #                               'contribution':lp.contribution}
+    #                              for lp in lug.lug_pickers]}
+    #                    for lug in l.lugs],
+    #          'arrival_time' : str(l.arrival_time)}
+    #     r = requests.post(urls['orchard_loads'], json=j, headers=HEADERS, auth=auth)
+    #     if r.status_code == 409:
+    #         print '{} already exists'.format(l.id)
+    #         r = requests.patch('{}{}/'.format(urls['orchard_loads'],l.id),json=j, headers=HEADERS, auth=auth)
+    #     if r.status_code not in xrange(200,300):
+    #         print r.status_code
+    #         print r.text
+    #         break
 
     # for t in Tag.query.all():
     #     j = {'epc':t.epc,

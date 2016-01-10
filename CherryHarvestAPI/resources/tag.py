@@ -29,7 +29,11 @@ class Tags(Resource):
     @marshal_with(tag_fields)
     def post(self):
         args = tag_parser.parse_args()
-        tag = models.Tag(**args)
+        tag=models.Tag(epc=args['epc'])
+        if args['current_picker_number_id']:
+            tag.current_picker_number_id = args['current_picker_number_id']
+        if args['current_lug_id']:
+            tag.current_lug_id = args['current_lug_id']
         try:
             db_session.add(tag)
             db_session.commit()
@@ -54,11 +58,11 @@ class Tag(Resource):
         tag = models.Tag.query.get(epc)
         if not tag:
             return abort(404)
-        for attr, value in args.items():
-            if value:
-                setattr(tag, attr, value)
-        if not args['current_picker_number_id']:
-            tag.current_picker_number = None
+        if args['current_picker_number_id']:
+            tag.current_picker_number_id = args['current_picker_number_id']
+        if args['current_lug_id']:
+            tag.current_lug_id = args['current_lug_id']
+
         db_session.commit()
         return tag
 
@@ -69,8 +73,14 @@ class Tag(Resource):
         tag = models.Tag.query.get(epc)
         if not tag:
             return abort(404)
-        for attr, value in args.items():
-            setattr(tag, attr, value)
+        if args['current_picker_number_id']:
+            tag.current_picker_number_id = args['current_picker_number_id']
+        else:
+            tag.current_picker_number_id = None
+        if args['current_lug_id']:
+            tag.current_lug_id = args['current_lug_id']
+        else:
+            tag.current_lug_id = None
         db_session.commit()
         return tag
 
