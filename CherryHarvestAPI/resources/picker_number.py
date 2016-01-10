@@ -11,6 +11,7 @@ from sqlalchemy.exc import IntegrityError
 picker_number_fields = {
     'id' : fields.Integer,
     'picker' : NestedWithEmpty({'href' : fields.Url('picker', absolute=True, scheme=app.config["SCHEME"])}),
+    'card_count' : fields.Integer,
 }
 
 picker_number_parser = reqparse.RequestParser()
@@ -55,7 +56,7 @@ class PickerNumber(Resource):
             return abort(404)
         if 'tags' in request.json and request.json['tag_epcs']:
             for e in request.json['tag_epcs']:
-                tag = Tag.query.get(e)
+                tag = models.Tag.query.get(e)
                 if not tag:
                     tag = Tag(epc=e)
                 picker_number.current_cards.append(tag)

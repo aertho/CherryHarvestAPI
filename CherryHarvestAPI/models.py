@@ -109,6 +109,10 @@ class PickerNumber(Base):
 
     picker = relationship(Picker)
 
+    @property
+    def card_count(self):
+        return len(self.current_cards)
+
 
 class Tag(Base):
     __tablename__ = 'card'
