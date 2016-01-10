@@ -65,12 +65,10 @@ def sync_db():
             'current_picker_number_id':t.current_picker_number_id,}
         r = requests.post(urls['tags'], json=j, headers=HEADERS, auth=auth)
         if r.status_code == 409:
-            print '{} error: {}'.format(t.epc, r.json())
+            print '{}: {}'.format(t.epc, r.json())
             r = requests.patch('{}{}/'.format(urls['tags'],t.epc),json=j, headers=HEADERS, auth=auth)
         if r.status_code not in xrange(200,300):
-            print j
             print r.status_code
-            print r.text
             break
 
 

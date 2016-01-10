@@ -33,7 +33,7 @@ class Tags(Resource):
         try:
             db_session.add(tag)
             db_session.commit()
-        except IntegrityError, e:
+        except Exception, e:
             db_session.rollback()
             return jsonify(error=e, args=args), 409
         return tag
