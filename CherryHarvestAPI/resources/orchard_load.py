@@ -74,6 +74,42 @@ class OrchardLoad(Resource):
         return load
 
     @auth.login_required
+    @marshal_with(orchard_load_fields)
+    def patch(self, id):
+        load = models.OrchardLoad.query.get(id)
+        if not load:
+            return abort(404)
+        args = load_parser.parse_args()
+        if 'lugs' in request.json and request.json['lugs']:
+            for l in args['lugs']:
+                if 'lug_pickers' in l and l['lug_pickers']:
+                    lps = []
+                    for lp in l['lug_pickers']:
+                        if lp['picker_id'] not in [sf.picker_id for sf in lps]:
+                            lps.append(models.LugPicker(**lp))
+                        else:
+                            [sf for sf in lps if sf.picker_id == lp['picker_id']][0].contribution += lp['contribution']
+                    l['lug_pickers'] = lps
+            args['lugs'] = [Lug.query.get(l['id']) or Lug(**l) for l in request.json['lugs']]
+        else:
+            args['lugs'] = []
+
+        for attr, value in args.items():
+            if value:
+                setattr(load, attr, value)
+        if load.departure_time:
+            load.departure_time = parser.parse(load.departure_time)
+        if load.arrival_time:
+            load.arrival_time = parser.parse(load.arrival_time)
+        try:
+            db_session.add(load)
+            db_session.commit()
+        except IntegrityError, e:
+            db_session.rollback()
+            return {'error' : e.message}, 409
+        return load
+
+    @auth.login_required
     def delete(self, id):
         load = models.OrchardLoad.query.get(id)
         if not load:

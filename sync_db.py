@@ -52,7 +52,7 @@ def sync_db():
                 'id' : lug.id,
                 'block_id' : lug.block_id,
                 'weight' : lug.weight,
-                'lug_pickers' : [{'picker_id':lp.id,
+                'lug_pickers' : [{'picker_id':lp.picker_id,
                                   'contribution':lp.contribution}
                                  for lp in lug.lug_pickers]}
                        for lug in l.lugs],
