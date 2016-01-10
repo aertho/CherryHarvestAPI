@@ -39,6 +39,7 @@ class OrchardLoads(Resource):
     @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
+        return args, 409
         load = models.Load()
         if 'lugs' in request.json and request.json['lugs']:
             for l in request.json['lugs']:
