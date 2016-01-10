@@ -107,7 +107,7 @@ class PickerNumber(Base):
     id = Column(Integer, primary_key=True)
     picker_id = Column(Integer, ForeignKey(Picker.id))
 
-    picker = relationship(Picker)
+    picker = relationship(Picker, backref=backref('picker_numbers'))
 
     @property
     def card_count(self):

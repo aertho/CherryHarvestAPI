@@ -48,6 +48,18 @@ class OrchardLoads(Resource):
                             lps.append(models.LugPicker(**lp))
                         else:
                             [sf for sf in lps if sf.picker_id == lp['picker_id']][0].contribution += lp['contribution']
+                elif 'tag_ids' in l and l['tag_ids']:
+                    lps = []
+                    for t in l['tag_ids']:
+                        tag = models.Tag.query.get('t')
+                        if not tag or not tag.current_picker_number or not tag.current_picker_number.picker:
+                            continue
+                        if tag.current_picker_number.picker_id not in [sf.picker_id for sf in lps]:
+                            lps.append(models.LugPicker(picker_id=tag.current_picker_number.picker_id, contribution=1./len(l['tag_ids'])))
+                        else:
+                            [sf for sf in lps if sf.picker_id == tag.current_picker_number.picker_id][0].contribution += 1./len(l['tag_ids'])
+                        tag.current_picker_number = None
+
                     l['lug_pickers'] = lps
             args['lugs'] = [Lug.query.get(l['id']) if 'id' in l and Lug.query.get(l['id']) else Lug(**l) for l in request.json['lugs']]
         else:
