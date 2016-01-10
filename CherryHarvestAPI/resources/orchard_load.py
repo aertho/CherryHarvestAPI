@@ -61,7 +61,6 @@ class OrchardLoads(Resource):
                         tag.current_picker_number = None
 
                     load.lugs.append(lug)
-        return request.json, 409
 
         if args['departure_time']:
             try:
@@ -76,6 +75,7 @@ class OrchardLoads(Resource):
         try:
             db_session.add(load)
             db_session.commit()
+            return request.json, 409
         except IntegrityError, e:
             db_session.rollback()
             return {'error' : e.message}, 409
