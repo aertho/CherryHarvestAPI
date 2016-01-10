@@ -51,7 +51,7 @@ class OrchardLoads(Resource):
                 elif 'tag_ids' in l and l['tag_ids']:
                     lps = []
                     for t in l['tag_ids']:
-                        tag = models.Tag.query.get('t')
+                        tag = models.Tag.query.get(t)
                         if not tag or not tag.current_picker_number or not tag.current_picker_number.picker:
                             continue
                         if tag.current_picker_number.picker_id not in [sf.picker_id for sf in lps]:
