@@ -69,6 +69,7 @@ def sync_db():
             r = requests.patch('{}{}/'.format(urls['tags'],t.epc),json=j, headers=HEADERS, auth=auth)
         if r.status_code not in xrange(200,300):
             print r.status_code
+            print r.json()
             break
 
 
