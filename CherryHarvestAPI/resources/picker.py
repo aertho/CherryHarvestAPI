@@ -34,7 +34,7 @@ def email(value):
 
 picker_parser = reqparse.RequestParser()
 picker_parser.add_argument('id', type=int)
-picker_parser.add_argument('first_name', required=True)
+picker_parser.add_argument('first_name')
 picker_parser.add_argument('last_name')
 picker_parser.add_argument('pay_rate', type=float)
 picker_parser.add_argument('pay_type', type=pay_type)
@@ -51,7 +51,7 @@ class Pickers(Resource):
     @marshal_with(picker_fields)
     def post(self):
         args = picker_parser.parse_args()
-        picker = models.Picker(**args)
+        picker = models.Picker(first_name=args['first_name'], last_name=args['last_name'])
         try:
             db_session.add(picker)
             db_session.commit()
