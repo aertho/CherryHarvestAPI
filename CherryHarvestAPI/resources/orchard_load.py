@@ -39,6 +39,8 @@ class OrchardLoads(Resource):
     @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
+        if 'id' in args and not args['id']:
+            args['id'] = None
         if 'lugs' in request.json and request.json['lugs']:
             for l in request.json['lugs']:
                 if 'lug_pickers' in l and l['lug_pickers']:
