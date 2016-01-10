@@ -39,45 +39,39 @@ class OrchardLoads(Resource):
     @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
-        if 'id' in args and not args['id']:
-            args.pop('id')
+        load = models.Load()
         if 'lugs' in request.json and request.json['lugs']:
             for l in request.json['lugs']:
+                lug = Lug(weight=l['weight'], block_id=l['block_id'])
                 if 'lug_pickers' in l and l['lug_pickers']:
-                    lps = []
                     for lp in l['lug_pickers']:
-                        if lp['picker_id'] not in [sf.picker_id for sf in lps]:
-                            lps.append(models.LugPicker(**lp))
+                        if lp['picker_id'] not in [sf.picker_id for sf in lug.lug_pickers]:
+                            lug.lug_pickers.append(models.LugPicker(**lp))
                         else:
-                            [sf for sf in lps if sf.picker_id == lp['picker_id']][0].contribution += lp['contribution']
+                            [sf for sf in lug.lug_pickers if sf.picker_id == lp['picker_id']][0].contribution += lp['contribution']
                 elif 'tag_ids' in l and l['tag_ids']:
-                    lps = []
                     for t in l['tag_ids']:
                         tag = models.Tag.query.get(t)
                         if not tag or not tag.current_picker_number or not tag.current_picker_number.picker:
                             continue
-                        if tag.current_picker_number.picker_id not in [sf.picker_id for sf in lps]:
-                            lps.append(models.LugPicker(picker_id=tag.current_picker_number.picker_id, contribution=1./len(l['tag_ids'])))
+                        if tag.current_picker_number.picker_id not in [sf.picker_id for sf in lug.lug_pickers]:
+                            lug.lug_pickers.append(models.LugPicker(picker_id=tag.current_picker_number.picker_id, contribution=1./len(l['tag_ids'])))
                         else:
-                            [sf for sf in lps if sf.picker_id == tag.current_picker_number.picker_id][0].contribution += 1./len(l['tag_ids'])
+                            [sf for sf in lug.lug_pickers if sf.picker_id == tag.current_picker_number.picker_id][0].contribution += 1./len(l['tag_ids'])
                         tag.current_picker_number = None
 
-                    l['lug_pickers'] = lps
-            args['lugs'] = [Lug.query.get(l['id']) if 'id' in l and Lug.query.get(l['id']) else Lug(weight=l['weight'], block_id=l['block_id']) for l in request.json['lugs']]
-        else:
-            args['lugs'] = []
+                    load.lugs.append(lug)
 
-        load = models.OrchardLoad(**args)
-        if load.departure_time:
+        if args['departure_time']:
             try:
-                load.departure_time = parser.parse(load.departure_time)
+                load.departure_time = parser.parse(args['departure_time'])
             except ValueError:
-                load.departure_time = datetime.datetime.now()
-        if load.arrival_time:
+                load.departure_time = None
+        if args['arrival_time']:
             try:
-                load.arrival_time = parser.parse(load.arrival_time)
+                load.arrival_time = parser.parse(args['arrival_time'])
             except ValueError:
-                load.arrival_time = datetime.datetime.now()
+                load.arrival_time = None
         try:
             db_session.add(load)
             db_session.commit()
