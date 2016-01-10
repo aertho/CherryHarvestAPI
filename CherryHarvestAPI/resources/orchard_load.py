@@ -36,7 +36,7 @@ class OrchardLoads(Resource):
         return loads
 
     @auth.login_required
-    # @marshal_with(orchard_load_fields)
+    @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
         load = models.Load()
@@ -75,7 +75,6 @@ class OrchardLoads(Resource):
         try:
             db_session.add(load)
             db_session.commit()
-            return request.json, 409
         except IntegrityError, e:
             db_session.rollback()
             return {'error' : e.message}, 409
