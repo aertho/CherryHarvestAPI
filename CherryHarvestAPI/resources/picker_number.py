@@ -54,7 +54,7 @@ class PickerNumber(Resource):
         picker_number = models.PickerNumber.query.get(id)
         if not picker_number:
             return abort(404)
-        if 'tags' in request.json and request.json['tag_epcs']:
+        if 'tag_epcs' in request.json and request.json['tag_epcs']:
             for e in request.json['tag_epcs']:
                 tag = models.Tag.query.get(e)
                 if not tag:
