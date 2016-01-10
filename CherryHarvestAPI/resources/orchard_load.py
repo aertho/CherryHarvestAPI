@@ -39,9 +39,8 @@ class OrchardLoads(Resource):
     # @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
-        return request.json, 409
         load = models.Load()
-        if 'lugs' in request.json and request.json['lugs']:
+        if 'lugs' in request.json:
             for l in request.json['lugs']:
                 lug = Lug(weight=l['weight'], block_id=l['block_id'])
                 if 'lug_pickers' in l and l['lug_pickers']:
@@ -62,6 +61,7 @@ class OrchardLoads(Resource):
                         tag.current_picker_number = None
 
                     load.lugs.append(lug)
+        return request.json, 409
 
         if args['departure_time']:
             try:
