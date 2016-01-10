@@ -40,7 +40,7 @@ class OrchardLoads(Resource):
     def post(self):
         args = load_parser.parse_args()
         if 'id' in args and not args['id']:
-            args['id'] = None
+            args.pop('id')
         if 'lugs' in request.json and request.json['lugs']:
             for l in request.json['lugs']:
                 if 'lug_pickers' in l and l['lug_pickers']:
@@ -66,6 +66,7 @@ class OrchardLoads(Resource):
             args['lugs'] = [Lug.query.get(l['id']) if 'id' in l and Lug.query.get(l['id']) else Lug(weight=l['weight'], block_id=l['block_id']) for l in request.json['lugs']]
         else:
             args['lugs'] = []
+
         load = models.OrchardLoad(**args)
         if load.departure_time:
             try:
