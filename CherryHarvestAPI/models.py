@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 from CherryHarvestAPI.database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Enum, BigInteger
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -31,7 +32,7 @@ class Picker(Base):
 
     def daily_total(self, date=None):
         if date is None:
-            date = datetime.date.today()
+            date = datetime.datetime.now(pytz.timezone('Australia/Hobart')).date()
         return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs if lp.lug.orchard_load.arrival_time.date() == date])
 
 
