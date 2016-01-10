@@ -81,7 +81,7 @@ class OrchardLoad(Resource):
             return abort(404)
         args = load_parser.parse_args()
         if 'lugs' in request.json and request.json['lugs']:
-            for l in args['lugs']:
+            for l in request.json['lugs']:
                 if 'lug_pickers' in l and l['lug_pickers']:
                     lps = []
                     for lp in l['lug_pickers']:
@@ -90,7 +90,7 @@ class OrchardLoad(Resource):
                         else:
                             [sf for sf in lps if sf.picker_id == lp['picker_id']][0].contribution += lp['contribution']
                     l['lug_pickers'] = lps
-            args['lugs'] = [Lug.query.get(l['id']) or Lug(**l) for l in request.json['lugs']]
+            args['lugs'] = [Lug.query.get(l['id']) if 'id' in l and Lug.query.get(l['id']) else Lug(**l) for l in request.json['lugs']]
         else:
             args['lugs'] = []
 
