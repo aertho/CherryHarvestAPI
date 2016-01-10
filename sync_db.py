@@ -44,28 +44,34 @@ def sync_db():
     #     if r.status_code not in xrange(200,300):
     #         print r.status_code
 
-    for l in OrchardLoad.query.all():
-        j = {'id':l.id,
-             'lugs' : [{
-                'id' : lug.id,
-                'block_id' : lug.block_id,
-                'weight' : lug.weight} for lug in l.lugs],
-             'arrival_time' : str(l.arrival_time)}
-        r = requests.post(urls['orchard_loads'], json=j, headers=HEADERS, auth=auth)
+    # for l in OrchardLoad.query.all():
+    #     j = {'id':l.id,
+    #          'lugs' : [{
+    #             'id' : lug.id,
+    #             'block_id' : lug.block_id,
+    #             'weight' : lug.weight} for lug in l.lugs],
+    #          'arrival_time' : str(l.arrival_time)}
+    #     r = requests.post(urls['orchard_loads'], json=j, headers=HEADERS, auth=auth)
+    #     if r.status_code == 409:
+    #         print '{} already exists'.format(l.id)
+    #         r = requests.patch('{}{}/'.format(urls['orchard_loads'],l.id),json=j, headers=HEADERS, auth=auth)
+    #     if r.status_code not in xrange(200,300):
+    #         print r.status_code
+    #         print r.text
+    #         break
+
+    for t in Tag.query.all():
+        j = {'epc':t.epc,
+            'current_picker_number_id':t.current_picker_number_id,}
+        r = requests.post(urls['tags'], json=j, headers=HEADERS, auth=auth)
+        print urls['tags']
         if r.status_code == 409:
-            print '{} already exists'.format(l.id)
-            r = requests.patch('{}{}/'.format(urls['orchard_loads'],l.id),json=j, headers=HEADERS, auth=auth)
+            print '{} already exists'.format(t.epc)
+            r = requests.patch('{}{}/'.format(urls['tags'],t.epc),json=j, headers=HEADERS, auth=auth)
         if r.status_code not in xrange(200,300):
             print r.status_code
             print r.text
             break
-    #
-    # for t in Tag.query.all():
-    #     j = {'epc':t.epc,
-    #         'current_picker_number_id':t.current_picker_number_id,}
-    #     r = requests.post(urls['tags'], json=j, headers=HEADERS, auth=auth)
-    #     if r.status_code == 409:
-    #         print '{} already exists'.format(t.id)
 
 
     # for l in Lug.query.all():

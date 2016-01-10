@@ -112,7 +112,7 @@ class PickerNumber(Base):
 
 class Tag(Base):
     __tablename__ = 'card'
-    epc = Column(String, primary_key=True)
+    epc = Column(String(128), primary_key=True)
     current_picker_number_id = Column(Integer, ForeignKey(PickerNumber.id))
     current_lug_id = Column(Integer, ForeignKey('lug.id'))
 

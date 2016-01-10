@@ -51,7 +51,6 @@ class Tag(Resource):
     @marshal_with(tag_fields)
     def patch(self, epc):
         args = tag_parser.parse_args()
-        print args
         tag = models.Tag.query.get(epc)
         if not tag:
             return abort(404)
