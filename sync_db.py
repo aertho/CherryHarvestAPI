@@ -24,15 +24,16 @@ def sync_db():
     #     if r.status_code == 409:
     #         print '{} already exists'.format(l.id)
 
-    # for l in PickerNumber.query.all():
-    #     j = {'id':l.id,
-    #         'picker_id': l.picker_id}
-    #     r = requests.post(urls['picker_numbers'], json=j, headers=HEADERS, auth=auth)
-    #     if r.status_code == 409:
-    #         print '{} already exists'.format(l.id)
-    #         r = requests.patch('{}{}/'.format(urls['picker_numbers'],l.id),json=j, headers=HEADERS, auth=auth)
-    #     if r.status_code not in xrange(200,300):
-    #         print r.status_code
+    for p in PickerNumber.query.all():
+        j = {'id':p.id,
+             'picker_id': p.picker_id,
+             'tag_epcs': [t.epc for t in p.current_cards]}
+        r = requests.post(urls['picker_numbers'], json=j, headers=HEADERS, auth=auth)
+        if r.status_code == 409:
+            print '{} already exists'.format(p.id)
+            r = requests.patch('{}{}/'.format(urls['picker_numbers'],p.id),json=j, headers=HEADERS, auth=auth)
+        if r.status_code not in xrange(200,300):
+            print r.status_code
 
     # for t in Block.query.all():
     #     j = {'id':t.id,
@@ -60,17 +61,17 @@ def sync_db():
     #         print r.text
     #         break
 
-    for t in Tag.query.all():
-        j = {'epc':t.epc,
-            'current_picker_number_id':t.current_picker_number_id,}
-        r = requests.post(urls['tags'], json=j, headers=HEADERS, auth=auth)
-        if r.status_code == 409:
-            print '{}: {}'.format(t.epc, r.json())
-            r = requests.patch('{}{}/'.format(urls['tags'],t.epc),json=j, headers=HEADERS, auth=auth)
-        if r.status_code not in xrange(200,300):
-            print r.status_code
-            print r.json()
-            break
+    # for t in Tag.query.all():
+    #     j = {'epc':t.epc,
+    #         'current_picker_number_id':t.current_picker_number_id,}
+    #     r = requests.post(urls['tags'], json=j, headers=HEADERS, auth=auth)
+    #     if r.status_code == 409:
+    #         print '{}: {}'.format(t.epc, r.json())
+    #         r = requests.patch('{}{}/'.format(urls['tags'],t.epc),json=j, headers=HEADERS, auth=auth)
+    #     if r.status_code not in xrange(200,300):
+    #         print r.status_code
+    #         print r.json()
+    #         break
 
 
     # for l in Lug.query.all():

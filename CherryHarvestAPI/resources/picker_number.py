@@ -1,6 +1,7 @@
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI import models, app
+from CherryHarvestAPI.models import Tag
 from CherryHarvestAPI.resources.common import NestedWithEmpty
 from CherryHarvestAPI.resources.picker import picker_fields
 from flask import jsonify, request
@@ -52,6 +53,12 @@ class PickerNumber(Resource):
         picker_number = models.PickerNumber.query.get(id)
         if not picker_number:
             return abort(404)
+        if 'tags' in request.json and request.json['tag_epcs']:
+            for e in request.json['tag_epcs']:
+                tag = Tag.query.get(e)
+                if not tag:
+                    tag = Tag(epc=e)
+                picker_number.current_cards.append(tag)
         for attr, value in args.items():
             if value:
                 setattr(picker_number, attr, value)

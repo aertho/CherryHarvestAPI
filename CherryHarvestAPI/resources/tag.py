@@ -28,12 +28,12 @@ class Tags(Resource):
     @auth.login_required
     @marshal_with(tag_fields)
     def post(self):
+        args = tag_parser.parse_args()
+        tag = models.Tag(**args)
         try:
-            args = tag_parser.parse_args()
-            tag = models.Tag(**args)
             db_session.add(tag)
             db_session.commit()
-        except Exception, e:
+        except IntegrityError, e:
             db_session.rollback()
             return jsonify(error=e, args=args), 409
         return tag
