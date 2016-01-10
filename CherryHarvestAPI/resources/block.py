@@ -18,8 +18,9 @@ def orientation(value):
     return value
 
 block_parser = reqparse.RequestParser()
+block_parser.add_argument('id', type=int)
 block_parser.add_argument('variety', required=True)
-block_parser.add_argument('orientation', type=orientation, required=True)
+block_parser.add_argument('orientation', type=orientation)
 block_parser.add_argument('plant_year', type=int)
 
 

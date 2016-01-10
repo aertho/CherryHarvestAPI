@@ -45,6 +45,7 @@ def orchard_load_id(value):
     return value
 
 lug_parser = reqparse.RequestParser()
+lug_parser.add_argument('id', int)
 lug_parser.add_argument('weight', float)
 lug_parser.add_argument('current_status')
 lug_parser.add_argument('block_id', int)

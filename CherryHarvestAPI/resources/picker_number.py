@@ -13,7 +13,7 @@ picker_number_fields = {
 }
 
 picker_number_parser = reqparse.RequestParser()
-picker_number_parser.add_argument('id')
+picker_number_parser.add_argument('id', type=int)
 picker_number_parser.add_argument('picker_id', type=int)
 
 

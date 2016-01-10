@@ -33,6 +33,7 @@ def email(value):
     return value
 
 picker_parser = reqparse.RequestParser()
+picker_parser.add_argument('id', type=int)
 picker_parser.add_argument('first_name', required=True)
 picker_parser.add_argument('last_name')
 picker_parser.add_argument('pay_rate', type=float)

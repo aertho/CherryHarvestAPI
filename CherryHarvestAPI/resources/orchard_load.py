@@ -3,6 +3,7 @@ from copy import copy
 from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
+from CherryHarvestAPI.models import Lug
 from CherryHarvestAPI.resources.common import simple_lug_fields
 from dateutil import parser
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
@@ -19,9 +20,10 @@ orchard_load_fields = {
 }
 
 load_parser = reqparse.RequestParser()
+load_parser.add_argument('id', type=int)
 load_parser.add_argument('departure_time')
 load_parser.add_argument('arrival_time')
-load_parser.add_argument('lugs', list)
+load_parser.add_argument('lugs', type=list)
 
 class OrchardLoads(Resource):
     orchard_load_fields = orchard_load_fields
@@ -32,9 +34,11 @@ class OrchardLoads(Resource):
         return loads
 
     @auth.login_required
-    @marshal_with(Resource)
+    @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
+        if 'lugs' in args:
+            args['lugs'] = [Lug(**l) for l in args['lugs']]
         load = models.OrchardLoad(**args)
         if load.departure_time:
             load.departure_time = parser.parse(load.departure_time)

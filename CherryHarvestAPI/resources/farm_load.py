@@ -19,6 +19,7 @@ farm_load_fields = {
 }
 
 load_parser = reqparse.RequestParser()
+load_parser.add_argument('id', type=int)
 load_parser.add_argument('departure_time')
 load_parser.add_argument('arrival_time')
 
@@ -31,7 +32,7 @@ class FarmLoads(Resource):
         return loads
 
     @auth.login_required
-    @marshal_with(Resource)
+    @marshal_with(farm_load_fields)
     def post(self):
         args = load_parser.parse_args()
         load = models.FarmLoad(**args)
