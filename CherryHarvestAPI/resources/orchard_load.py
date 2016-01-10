@@ -61,7 +61,7 @@ class OrchardLoads(Resource):
                         tag.current_picker_number = None
 
                     l['lug_pickers'] = lps
-            args['lugs'] = [Lug.query.get(l['id']) if 'id' in l and Lug.query.get(l['id']) else Lug(**l) for l in request.json['lugs']]
+            args['lugs'] = [Lug.query.get(l['id']) if 'id' in l and Lug.query.get(l['id']) else Lug(weight=args['weight'], block_id=args['block_id']) for l in request.json['lugs']]
         else:
             args['lugs'] = []
         load = models.OrchardLoad(**args)
