@@ -6,7 +6,7 @@ from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI.models import Lug
 from CherryHarvestAPI.resources.common import simple_lug_fields
 from dateutil import parser
-from flask import json
+from flask import json, request
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
 import regex
@@ -24,7 +24,6 @@ load_parser = reqparse.RequestParser()
 load_parser.add_argument('id', type=int)
 load_parser.add_argument('departure_time')
 load_parser.add_argument('arrival_time')
-load_parser.add_argument('lugs', type=json.loads)
 
 class OrchardLoads(Resource):
     orchard_load_fields = orchard_load_fields
@@ -38,8 +37,8 @@ class OrchardLoads(Resource):
     @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
-        if 'lugs' in args and args['lugs']:
-            args['lugs'] = [Lug(**l) for l in args['lugs']]
+        if 'lugs' in request.json and request.json['lugs']:
+            args['lugs'] = [Lug(**l) for l in request.json['lugs']]
         else:
             args['lugs'] = []
         load = models.OrchardLoad(**args)
