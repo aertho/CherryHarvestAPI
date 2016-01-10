@@ -39,7 +39,7 @@ class OrchardLoads(Resource):
     @marshal_with(orchard_load_fields)
     def post(self):
         args = load_parser.parse_args()
-        load = models.Load()
+        load = models.OrchardLoad()
         if 'lugs' in request.json:
             for l in request.json['lugs']:
                 lug = Lug(weight=l['weight'], block_id=l['block_id'])
@@ -60,7 +60,7 @@ class OrchardLoads(Resource):
                             [sf for sf in lug.lug_pickers if sf.picker_id == tag.current_picker_number.picker_id][0].contribution += 1./len(l['tag_ids'])
                         tag.current_picker_number = None
 
-                    load.lugs.append(lug)
+                load.lugs.append(lug)
 
         if args['departure_time']:
             try:
