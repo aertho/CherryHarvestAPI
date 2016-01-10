@@ -35,7 +35,7 @@ class Tags(Resource):
             db_session.commit()
         except IntegrityError, e:
             db_session.rollback()
-            return jsonify(error=e.message), 409
+            return jsonify(error=e, args=args), 409
         return tag
 
 
