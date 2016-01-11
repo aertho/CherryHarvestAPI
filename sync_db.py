@@ -79,14 +79,15 @@ def sync_db():
     #         break
 
 
-    # for l in Lug.query.all():
-    #     j = {'id':l.id,
-    #         'weight': l.weight,
-    #         'block_id': l.block_id,
-    #         'orchard_load_id': l.orchard_load_id}
-    #     r = requests.post(urls['lugs'], json=j, headers=HEADERS, auth=auth)
-    #     if r.status_code == 409:
-    #         print '{} already exists'.format(l.id)
+    for l in Lug.query.filter(Lug.id < 1100).all():
+        for lp in l.lug_pickers:
+            j = {
+                'picker_id' : lp.picker_id,
+                'contribution' : lp.contribution,
+            }
+            r = requests.post('{}{}/lug-pickers/'.format(urls['lugs'],l.id), json=j, headers=HEADERS, auth=auth)
+            if r.status_code not in xrange(200,300):
+                print r.status_code
 
 
 
