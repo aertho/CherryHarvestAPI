@@ -22,7 +22,7 @@ picker_number_parser.add_argument('picker_id', type=int)
 class PickerNumbers(Resource):
     @marshal_with(picker_number_fields)
     def get(self):
-        picker_numbers = models.PickerNumber.query.all()
+        picker_numbers = models.PickerNumber.query.order_by(models.PickerNumber.id).all()
         return picker_numbers
 
     @auth.login_required
