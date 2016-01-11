@@ -11,7 +11,7 @@ class Today(Resource):
     @auth.login_required
     def get(self):
         blocks = [{'variety' : b.variety, 'weight_today': sum([l.weight for l in Lug.query.all() if l.block_id == b.id and l.orchard_load.arrival_time.today() == date.today()])} for b in Block.query.all()]
-        total_today = sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date() == datetime.datetime.now(pytz.timezone('Australia/Hobart')).date()])
+        total_today = sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date() == datetime.now(pytz.timezone('Australia/Hobart')).date()])
         loads = [{'time' :str(l.arrival_time), 'weight' : l.net_weight} for l in OrchardLoad.query.all() if l.arrival_time.date() == date.today()]
         pickers = [{'name':'{} {}'.format(p.first_name, p.last_name), 'weight':p.daily_total()} for p in Picker.query.all() if p.daily_total()]
         return {'total_today' : total_today,
