@@ -32,7 +32,7 @@ class Picker(Base):
 
     def daily_total(self, date=None):
         if date is None:
-            date = datetime.datetime.now(pytz.timezone('Australia/Hobart')).date()
+            date = datetime.date.today()
         return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs if lp.lug.orchard_load.arrival_time.date() == date])
 
 
