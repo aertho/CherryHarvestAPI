@@ -9,11 +9,14 @@ picker_fields = {
     'id' : fields.Integer,
     'first_name' : fields.String,
     'last_name' : fields.String,
-    'pay_rate' : fields.Float,
-    'pay_type' : fields.String,
-    'mobile_number' : fields.String,
-    'email' : fields.String,
+    # 'pay_rate' : fields.Float,
+    # 'pay_type' : fields.String,
+    # 'mobile_number' : fields.String,
+    # 'email' : fields.String,
+    'total' : fields.Float,
     'today_total' : fields.Float,
+    'picker_numbers' : fields.List(fields.Nested({'id':fields.Integer})),
+    'card_count' : fields.Integer,
     'href' : fields.Url('picker',  absolute=True, scheme=app.config["SCHEME"])
 }
 

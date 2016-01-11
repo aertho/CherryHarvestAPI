@@ -23,6 +23,7 @@ class Picker(Base):
 
     picker_lugs = relationship("LugPicker", backref=backref("picker"))
 
+    @property
     def total(self):
         return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs])
 
@@ -35,6 +36,10 @@ class Picker(Base):
             date = datetime.date.today()
         return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs if lp.lug.orchard_load.arrival_time.date() == date])
 
+    @property
+    def card_count(self):
+        return sum([len(pn.current_cards) for pn in self.picker_numbers])
+
 
 class Block(Base):
     __tablename__ = 'block'
@@ -43,6 +48,10 @@ class Block(Base):
     variety = Column(String)
     plant_year = Column(Integer)
     orientation = Column(String(16))
+
+    @property
+    def total(self):
+        return sum([l.weight for l in self.lugs])
 
     @property
     def today_total(self):
