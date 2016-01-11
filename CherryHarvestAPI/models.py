@@ -44,6 +44,16 @@ class Block(Base):
     plant_year = Column(Integer)
     orientation = Column(String(16))
 
+    @property
+    def today_total(self):
+        return self.daily_total()
+
+    def daily_total(self, date=None):
+        if date is None:
+            date = datetime.date.today()
+        return sum([l.weight for l in self.lugs if l.orchard_load.arrival_time.date() == date])
+
+
 
 class Load(Base):
     __tablename__ = 'load'
