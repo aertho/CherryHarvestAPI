@@ -13,5 +13,6 @@ class APIRoot(Resource):
             "farm_loads" : url_for('farm_loads', _external=True, _scheme=app.config["SCHEME"]),
             "picker_numbers" : url_for('picker_numbers', _external=True, _scheme=app.config["SCHEME"]),
             "tags" : url_for('tags', _external=True, _scheme=app.config["SCHEME"]),
-            "days" : url_for('days', _external=True, _scheme=app.config["SCHEME"])
+            "days" : url_for('days', _external=True, _scheme=app.config["SCHEME"]),
+            "seasons" : url_for('seasons', _external=True, _scheme=app.config["SCHEME"])
         }

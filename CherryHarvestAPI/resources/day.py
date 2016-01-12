@@ -31,7 +31,7 @@ class Day(Resource):
         blocks = [{'variety' : b.variety, 'weight': b.daily_total(date)} for b in Block.query.all() if b.today_total]
         total = sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date() == date])
         loads = [{'time' :str(l.arrival_time), 'weight' : l.net_weight} for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if l.arrival_time.date() == date]
-        pickers = ranked_pickers(dateutil)
+        pickers = ranked_pickers(date)
         return {'total' : total,
                 'blocks': blocks,
                 'loads': loads,
