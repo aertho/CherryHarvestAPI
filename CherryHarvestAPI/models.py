@@ -2,7 +2,7 @@ import datetime
 
 import pytz
 from CherryHarvestAPI.database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Enum, BigInteger
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Enum, BigInteger, Boolean
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,6 +20,7 @@ class Picker(Base):
     pay_type = Column(String(16))
     mobile_number = Column(String(16))
     email = Column(String(64))
+    is_manager = Column(Boolean, default=False, nullable=False)
 
     picker_lugs = relationship("LugPicker", backref=backref("picker"))
 
