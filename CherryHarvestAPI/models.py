@@ -20,7 +20,7 @@ class Picker(Base):
     pay_type = Column(String(16))
     mobile_number = Column(String(16))
     email = Column(String(64))
-    is_manager = Column(Boolean, default=False, nullable=False)
+    is_manager = Column(Boolean, default=False, nullable=True)
 
     picker_lugs = relationship("LugPicker", backref=backref("picker"))
 
