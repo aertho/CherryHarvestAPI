@@ -13,7 +13,7 @@ def ranked_pickers(date):
                        'rank':i,
                        'picker_numbers':[pn.id for pn in p.picker_numbers]}
             for i, p in enumerate(sorted(Picker.query.all(), key=lambda x: x.daily_total(date), reverse=True),1)
-            if p.daily_total(date)]
+            if p.daily_total(date) and not p.is_manager]
 
 class Days(Resource):
     def get(self):
