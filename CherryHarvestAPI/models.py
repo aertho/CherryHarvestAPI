@@ -25,10 +25,6 @@ class Picker(Base):
     picker_lugs = relationship("LugPicker", backref=backref("picker"))
 
     @property
-    def total(self):
-        return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs])
-
-    @property
     def today_total(self):
         return self.daily_total()
 
@@ -37,9 +33,35 @@ class Picker(Base):
             date = datetime.date.today()
         return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs if lp.lug.orchard_load.arrival_time.date() == date])
 
+    def weekly_total(self, date=None):
+        if date is None:
+            date = datetime.date.today()
+        return self.total(date - datetime.timedelta(days=date.isoweekday()), (date + datetime.timedelta(
+                days=8-date.isoweekday())))
+
+    def season_total(self, year=None):
+        if year is None:
+            year = datetime.date.today().year
+        return sum([lp.contribution*lp.lug.weight for lp in self.picker_lugs if
+                    lp.lug.orchard_load.arrival_time.date().year == year])
+
     @property
     def card_count(self):
         return sum([len(pn.current_cards) for pn in self.picker_numbers])
+
+    def total(self, from_date=None, to_date=None):
+        if not from_date and not to_date:
+            return sum(lp.contribution*lp.lug.weight for lp in self.picker_lugs)
+        return sum([lp.contribution * lp.lug.weight for lp in self.picker_lugs if
+                    lp.lug.orchard_load.arrival_time.date() >= from_date and lp.lug.orchard_load.arrival_time.date() <
+                    to_date])
+    @property
+    def current_week_total(self):
+        return self.weekly_total()
+
+    @property
+    def current_season_total(self):
+        return self.season_total()
 
 
 class Block(Base):

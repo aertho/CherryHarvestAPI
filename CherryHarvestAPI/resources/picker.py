@@ -1,6 +1,11 @@
+import datetime
+
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
+from CherryHarvestAPI.models import Picker
+from dateutil import parser
+from flask import request
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
 import regex
@@ -13,8 +18,6 @@ picker_fields = {
     # 'pay_type' : fields.String,
     # 'mobile_number' : fields.String,
     # 'email' : fields.String,
-    'total' : fields.Float,
-    'today_total' : fields.Float,
     'picker_numbers' : fields.List(fields.Nested({'id':fields.Integer})),
     'card_count' : fields.Integer,
     'href' : fields.Url('picker',  absolute=True, scheme=app.config["SCHEME"])
@@ -104,3 +107,62 @@ class Picker(Resource):
         db_session.delete(picker)
         db_session.commit()
         return '', 204
+
+
+ranked_picker_fields = {
+    'rank' : fields.Integer,
+    'total' : fields.Integer,
+    'picker' : fields.Nested(picker_fields)
+}
+
+
+def ranked_pickers(picker_function, max_people=10):
+    return [
+               {'rank' : i,
+                'total' : picker_function(p),
+                'picker' : p}
+                for i, p in enumerate(sorted(models.Picker.query.all(), key= picker_function, reverse=True), 1)
+                if picker_function(p) and not p.is_manager][:max_people]
+
+class Leadeboard(Resource):
+    @marshal_with(ranked_picker_fields)
+    def get(self):
+        return ranked_pickers(models.Picker.total)
+
+class DailyLeaderboard(Leadeboard):
+    @marshal_with(ranked_picker_fields)
+    def get(self):
+        if 'date' in request.args:
+            try:
+                date = parser.parse(request.args['date']).date()
+            except ValueError:
+                date = datetime.date.today()
+        else:
+            date = datetime.date.today()
+        return ranked_pickers(lambda p: models.Picker.daily_total(p, date))
+
+
+class WeeklyLeaderboard(Resource):
+    @marshal_with(ranked_picker_fields)
+    def get(self):
+        if 'date' in request.args:
+            try:
+                date = parser.parse(request.args['date']).date()
+            except ValueError:
+                date = datetime.date.today()
+        else:
+            date = datetime.date.today()
+        return ranked_pickers(lambda p: models.Picker.weekly_total(p, date))
+
+
+class SeasonLeaderboard(Resource):
+    @marshal_with(ranked_picker_fields)
+    def get(self):
+        if 'date' in request.args:
+            try:
+                year = parser.parse(request.args['year']).year()
+            except ValueError:
+                year = datetime.date.today().year
+        else:
+            year= datetime.date.today().year
+        return ranked_pickers(lambda p: models.Picker.season_total(p, year))
