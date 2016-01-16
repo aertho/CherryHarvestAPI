@@ -9,6 +9,8 @@ from sqlalchemy.exc import IntegrityError
 
 tag_fields = {
     'epc' : fields.String,
+    'current_picker_number_id' : fields.Integer,
+    'current_lug_id' : fields.Integer,
     'current_picker_number' : NestedWithEmpty({'href' : fields.Url('picker_number', absolute=True, scheme=app.config["SCHEME"])}),
     'current_lug' : NestedWithEmpty({'href' : fields.Url('lug', absolute=True, scheme=app.config["SCHEME"])})
 }
