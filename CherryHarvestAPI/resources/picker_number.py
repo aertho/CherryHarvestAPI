@@ -10,7 +10,8 @@ from sqlalchemy.exc import IntegrityError
 
 picker_number_fields = {
     'id' : fields.Integer,
-    'picker' : NestedWithEmpty({'href' : fields.Url('picker', absolute=True, scheme=app.config["SCHEME"])}),
+    'picker' : NestedWithEmpty({'href' : fields.Url('picker', absolute=True, scheme=app.config["SCHEME"]),
+                                'id' : fields.Integer}),
     'card_count' : fields.Integer,
 }
 
