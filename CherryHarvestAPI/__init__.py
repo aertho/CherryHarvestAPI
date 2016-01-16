@@ -6,7 +6,8 @@ app = Flask(__name__)
 app.config.from_object('config')
 api = Api(app)
 
-from CherryHarvestAPI.resources import api_root, lug, picker,block, orchard_load, farm_load, tag, picker_number, day, season
+from CherryHarvestAPI.resources import api_root, lug, picker,block, orchard_load, farm_load, tag, picker_number, day,\
+    season, lug_picker
 
 api.add_resource(api_root.APIRoot, '/', endpoint='api_root')
 api.add_resource(lug.Lugs, '/lugs/', endpoint='lugs')
@@ -42,4 +43,4 @@ api.add_resource(season.Seasons, '/seasons/', endpoint='seasons')
 api.add_resource(season.Season, '/seasons/<int:year>/', endpoint='season')
 api.add_resource(season.CurrentSeason, '/current-season/', endpoint='current_season')
 
-
+api.add_resource(lug_picker.LugPickers, '/lug-pickers/', endpoint='lug_pickers')
