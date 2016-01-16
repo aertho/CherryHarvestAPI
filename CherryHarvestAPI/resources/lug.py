@@ -12,7 +12,7 @@ lug_fields = {
     'id' : fields.Integer,
     'weight' : fields.String,
     'current_status' : fields.String,
-    # 'lug_pickers' : fields.Url('lug_pickers', absolute=True, scheme=app.config["SCHEME"]),
+    # 'lug_pickers' : fields.Url('lug_lug_pickers', absolute=True, scheme=app.config["SCHEME"]),
     'block_id' : fields.Integer,
     'block' : NestedWithEmpty({'href' : fields.Url('block', absolute=True, scheme=app.config["SCHEME"])}),
     'orchard_load_id' : fields.Integer,

@@ -12,7 +12,7 @@ from CherryHarvestAPI.resources import api_root, lug, picker,block, orchard_load
 api.add_resource(api_root.APIRoot, '/', endpoint='api_root')
 api.add_resource(lug.Lugs, '/lugs/', endpoint='lugs')
 api.add_resource(lug.Lug, '/lugs/<int:id>/', endpoint='lug')
-api.add_resource(lug.LugPickers, '/lugs/<int:id>/lug-pickers/', endpoint='lug_pickers')
+api.add_resource(lug.LugPickers, '/lugs/<int:id>/lug-pickers/', endpoint='lug_lug_pickers')
 
 api.add_resource(picker.Pickers, '/pickers/', endpoint='pickers')
 api.add_resource(picker.Picker, '/pickers/<int:id>/', endpoint='picker')
