@@ -16,13 +16,14 @@ api.add_resource(lug.LugPickers, '/lugs/<int:id>/lug-pickers/', endpoint='lug_lu
 
 api.add_resource(picker.Pickers, '/pickers/', endpoint='pickers')
 api.add_resource(picker.Picker, '/pickers/<int:id>/', endpoint='picker')
-api.add_resource(picker.Leadeboard, '/pickers/leaderboard/', endpoint='leaderboard')
-api.add_resource(picker.DailyLeaderboard, '/pickers/leaderboard/daily/',
+api.add_resource(picker.Leaderboards, '/pickers/leaderboards/', endpoint='leaderboards')
+api.add_resource(picker.DailyLeaderboard, '/pickers/leaderboards/daily/',
                  endpoint='daily_leaderboard')
-api.add_resource(picker.WeeklyLeaderboard, '/pickers/leaderboard/weekly/',
+api.add_resource(picker.WeeklyLeaderboard, '/pickers/leaderboards/weekly/',
                  endpoint='weekly_leaderboard')
-api.add_resource(picker.SeasonLeaderboard, '/pickers/leaderboard/season/',
-                 endpoint='season_leaderboard')
+api.add_resource(picker.SeasonalLeaderboard, '/pickers/leaderboards/seasonal/',
+                 endpoint='seasonal_leaderboard')
+api.add_resource(picker.AllTimeLeaderboard, '/pickers/leaderboards/all-time/', endpoint='all_time_leaderboard')
 
 api.add_resource(block.Blocks, '/blocks/', endpoint='blocks')
 api.add_resource(block.Block, '/blocks/<int:id>/', endpoint='block')

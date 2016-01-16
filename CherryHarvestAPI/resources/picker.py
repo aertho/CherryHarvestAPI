@@ -3,9 +3,8 @@ import datetime
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI.models import Picker
 from dateutil import parser
-from flask import request
+from flask import request, url_for
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
 import regex
@@ -124,25 +123,17 @@ def ranked_pickers(picker_function, max_people=10):
                 for i, p in enumerate(sorted(models.Picker.query.all(), key= picker_function, reverse=True), 1)
                 if picker_function(p) and not p.is_manager][:max_people]
 
-class Leadeboard(Resource):
-    @marshal_with(ranked_picker_fields)
+class Leaderboards(Resource):
     def get(self):
-        return ranked_pickers(models.Picker.total)
+        return {
+            'daily' : url_for('daily_leaderboard', _external=True, _scheme=app.config["SCHEME"]),
+            'weekly' : url_for('weekly_leaderboard', _external=True, _scheme=app.config["SCHEME"]),
+            'seasonal' : url_for('seasonal_leaderboard', _external=True, _scheme=app.config["SCHEME"]),
+            'all_time' : url_for('all_time_leaderboard', _external=True, _scheme=app.config["SCHEME"]),
+        }
 
-class DailyLeaderboard(Leadeboard):
-    @marshal_with(ranked_picker_fields)
-    def get(self):
-        if 'date' in request.args:
-            try:
-                date = parser.parse(request.args['date']).date()
-            except ValueError:
-                date = datetime.date.today()
-        else:
-            date = datetime.date.today()
-        return ranked_pickers(lambda p: models.Picker.daily_total(p, date))
-
-
-class WeeklyLeaderboard(Resource):
+class Leaderboard(Resource):
+    picker_function = models.Picker.total
     @marshal_with(ranked_picker_fields)
     def get(self):
         if 'date' in request.args:
@@ -152,17 +143,20 @@ class WeeklyLeaderboard(Resource):
                 date = datetime.date.today()
         else:
             date = datetime.date.today()
-        return ranked_pickers(lambda p: models.Picker.weekly_total(p, date))
+        return ranked_pickers(lambda p: self.picker_function(p, date=date))
 
 
-class SeasonLeaderboard(Resource):
-    @marshal_with(ranked_picker_fields)
-    def get(self):
-        if 'date' in request.args:
-            try:
-                year = parser.parse(request.args['year']).year()
-            except ValueError:
-                year = datetime.date.today().year
-        else:
-            year= datetime.date.today().year
-        return ranked_pickers(lambda p: models.Picker.season_total(p, year))
+class DailyLeaderboard(Leaderboard):
+    picker_function = models.Picker.total
+
+
+class WeeklyLeaderboard(Leaderboard):
+    picker_function = models.Picker.weekly_total
+
+
+class SeasonalLeaderboard(Leaderboard):
+    picker_function = models.Picker.seasonal_total
+
+
+class AllTimeLeaderboard(Leaderboard):
+    picker_function = models.Picker.all_time_total
