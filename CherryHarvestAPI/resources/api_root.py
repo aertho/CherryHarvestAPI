@@ -9,6 +9,7 @@ class APIRoot(Resource):
             "lugs" : url_for('lugs', _external=True, _scheme=app.config["SCHEME"]),
             "lug_pickers" : url_for('lug_pickers', _external=True, _scheme=app.config["SCHEME"]),
             "pickers" : url_for('pickers', _external=True, _scheme=app.config["SCHEME"]),
+            "leaderboards" : url_for('leaderboards', _external=True, _scheme=app.config["SCHEME"]),
             "blocks" : url_for('blocks', _external=True, _scheme=app.config["SCHEME"]),
             "orchard_loads" : url_for('orchard_loads', _external=True, _scheme=app.config["SCHEME"]),
             "farm_loads" : url_for('farm_loads', _external=True, _scheme=app.config["SCHEME"]),
