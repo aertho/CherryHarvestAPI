@@ -12,10 +12,7 @@ try:
 except KeyError:
     SECRET_KEY = "\x0f\xd6\x17y\r!>g\x14E\xbbQ\x06\x9b\x8b\xb0\xa7\xfc\xd1M'\xb8'\xee"
 
-try:
-    SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
-except KeyError:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
+SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 
 DATABASE_CONNECT_OPTIONS = {}
 
