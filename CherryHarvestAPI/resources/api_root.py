@@ -16,5 +16,6 @@ class APIRoot(Resource):
             "picker_numbers" : url_for('picker_numbers', _external=True, _scheme=app.config["SCHEME"]),
             "tags" : url_for('tags', _external=True, _scheme=app.config["SCHEME"]),
             "days" : url_for('days', _external=True, _scheme=app.config["SCHEME"]),
+            "today" : url_for('today', _external=True, _scheme=app.config["SCHEME"]),
             "seasons" : url_for('seasons', _external=True, _scheme=app.config["SCHEME"])
         }

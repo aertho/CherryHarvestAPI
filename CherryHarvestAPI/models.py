@@ -123,7 +123,7 @@ class Load(Base):
     }
 
     @property
-    def net_weight(self):
+    def total(self):
         return sum([l.weight or 0 for l in self.lugs])
 
 class OrchardLoad(Load):

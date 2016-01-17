@@ -28,7 +28,7 @@ class Days(Resource):
         dates = set([ol.arrival_time.date() for ol in OrchardLoad.query.all()])
         return [{
             'date' : str(d),
-            'total' : sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date() == d]),
+            'total' : sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date() == d]),
             'pickers' : ranked_pickers(d)[:min(3,len(ranked_pickers(d)))],
             'href' : url_for('day', date=str(d), _external=True, _scheme=app.config['SCHEME'])
         } for d in dates]
@@ -38,7 +38,7 @@ class Day(Resource):
     @marshal_with(day_fields)
     def get(self, date):
         date = dateutil.parser.parse(date).date()
-        total = sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date() == date])
+        total = sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date() == date])
         blocks = totalled_blocks(date=date)
         orchard_loads = [l for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if
                          l.arrival_time.date() == date]

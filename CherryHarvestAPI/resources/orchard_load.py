@@ -15,7 +15,7 @@ import regex
 
 orchard_load_fields = {
     'id' : fields.Integer,
-    'net_weight' : fields.Float,
+    'total' : fields.Integer,
     'departure_time' : fields.DateTime,
     'arrival_time' : fields.DateTime,
     # 'destination' : fields.String,

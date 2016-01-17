@@ -20,7 +20,7 @@ class Seasons(Resource):
         years = [2016]
         return [{
             'season' : y,
-            'total' : sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date().year == y]),
+            'total' : sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date().year == y]),
             'pickers' : ranked_pickers()[:min(3,len(ranked_pickers()))],
             'href' : url_for('season', year=y, _external=True, _scheme=app.config['SCHEME'])
         } for y in years]
@@ -28,7 +28,7 @@ class Seasons(Resource):
 class Season(Resource):
     def get(self, year):
         blocks = [{'variety' : b.variety, 'weight': b.total} for b in Block.query.all() if b.total]
-        total = sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date().year == year])
+        total = sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date().year == year])
         # loads = [{'time' :str(l.arrival_time), 'weight' : l.net_weight} for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if l.arrival_time.date().year == year]
         pickers = ranked_pickers()
         return {'total' : total,
