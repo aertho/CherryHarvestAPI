@@ -16,8 +16,8 @@ import regex
 orchard_load_fields = {
     'id' : fields.Integer,
     'total' : fields.Integer,
-    'departure_time' : fields.DateTime,
-    'arrival_time' : fields.DateTime,
+    'departure_time' : fields.DateTime(dt_format='iso8601'),
+    'arrival_time' : fields.DateTime(dt_format='iso8601'),
     # 'destination' : fields.String,
     # 'lugs' : fields.Url('load_lugs', absolute=True, scheme=app.config['SCHEME'])
 }
