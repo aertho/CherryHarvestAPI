@@ -9,11 +9,11 @@ from CherryHarvestAPI import app
 
 def ranked_pickers(date):
     return [{'name':'{} {}'.format(p.first_name, p.last_name),
-                       'total':p.daily_total(date),
+                       'total':p.total(date),
                        'rank':i,
                        'picker_numbers':[pn.id for pn in p.picker_numbers]}
-            for i, p in enumerate(sorted(Picker.query.all(), key=lambda x: x.daily_total(date), reverse=True),1)
-            if p.daily_total(date) and not p.is_manager]
+            for i, p in enumerate(sorted(Picker.query.all(), key=lambda x: x.total(date), reverse=True),1)
+            if p.total(date) and not p.is_manager]
 
 class Days(Resource):
     def get(self):
