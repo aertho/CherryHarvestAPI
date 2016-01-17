@@ -73,10 +73,6 @@ class Block(Base):
     orientation = Column(String(16))
 
     @property
-    def total(self):
-        return sum([l.weight for l in self.lugs])
-
-    @property
     def today_total(self):
         return self.daily_total()
 
@@ -84,6 +80,32 @@ class Block(Base):
         if date is None:
             date = datetime.date.today()
         return sum([l.weight for l in self.lugs if l.orchard_load.arrival_time.date() == date])
+
+    @property
+    def current_season_total(self):
+        return self.seasonal_total()
+
+    def seasonal_total(self, date=None):
+        if not date:
+            date = datetime.date.today()
+        return self.total(datetime.date(date.year, 1, 1), date)
+
+    def weekly_total(self, date=None):
+        if date is None:
+            date = datetime.date.today()
+        return self.total(date - datetime.timedelta(days=date.isoweekday()-1), date)
+
+    def all_time_total(self, *args, **kwargs):
+        return self.total()
+
+    def total(self, date=None, to_date=None):
+        if date and to_date:
+            return sum([l.weight for l in self.lugs if
+                        l.orchard_load.arrival_time.date() >= date and l.orchard_load.arrival_time.date() <=
+                        to_date])
+        if date:
+            return sum([l.weight for l in self.lugs if l.orchard_load.arrival_time.date() == date])
+        return sum(l.weight for l in self.lugs)
 
 
 

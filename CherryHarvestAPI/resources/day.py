@@ -2,18 +2,26 @@ import datetime
 
 import dateutil
 from CherryHarvestAPI.models import OrchardLoad, Lug, Block, Picker
+from CherryHarvestAPI.resources.block import block_fields
+from CherryHarvestAPI.resources.common import ranked_pickers, totalled_blocks
+from CherryHarvestAPI.resources.orchard_load import orchard_load_fields
+from CherryHarvestAPI.resources.picker import ranked_picker_fields
 from dateutil import parser
 from flask import url_for, redirect
-from flask.ext.restful import Resource
-from CherryHarvestAPI import app
+from flask.ext.restful import Resource, fields, marshal_with
+from CherryHarvestAPI import app, models
 
-def ranked_pickers(date):
-    return [{'name':'{} {}'.format(p.first_name, p.last_name),
-                       'total':p.total(date),
-                       'rank':i,
-                       'picker_numbers':[pn.id for pn in p.picker_numbers]}
-            for i, p in enumerate(sorted(Picker.query.all(), key=lambda x: x.total(date), reverse=True),1)
-            if p.total(date) and not p.is_manager]
+totalled_block_fields = {
+    'total' : fields.Integer,
+    'block' : fields.Nested(block_fields)
+}
+
+day_fields = {
+    'total' : fields.Integer,
+    'totalled_blocks' : fields.Nested(totalled_block_fields),
+    'orchard_loads' : fields.Nested(orchard_load_fields),
+    'ranked_pickers' : fields.Nested(ranked_picker_fields),
+}
 
 class Days(Resource):
     def get(self):
@@ -25,18 +33,20 @@ class Days(Resource):
             'href' : url_for('day', date=str(d), _external=True, _scheme=app.config['SCHEME'])
         } for d in dates]
 
+
 class Day(Resource):
+    @marshal_with(day_fields)
     def get(self, date):
         date = dateutil.parser.parse(date).date()
-        blocks = [{'variety' : b.variety, 'weight': b.daily_total(date)} for b in Block.query.all() if b.daily_total(date)]
         total = sum([l.net_weight for l in OrchardLoad.query.all() if l.arrival_time.date() == date])
-        loads = [{'time' :str(l.arrival_time), 'weight' : l.net_weight} for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if l.arrival_time.date() == date]
-        pickers = ranked_pickers(date)
+        blocks = totalled_blocks(date=date)
+        orchard_loads = [l for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if
+                         l.arrival_time.date() == date]
+        pickers = ranked_pickers(date=date)
         return {'total' : total,
-                'blocks': blocks,
-                'loads': loads,
-                'pickers' : pickers}
-
+                'totalled_blocks': blocks,
+                'orchard_loads': orchard_loads,
+                'ranked_pickers' : pickers}
 
 class Today(Resource):
     def get(self):

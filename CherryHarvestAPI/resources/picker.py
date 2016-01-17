@@ -1,13 +1,14 @@
 import datetime
 
+import regex
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
+from CherryHarvestAPI.resources.common import ranked_pickers
 from dateutil import parser
 from flask import request, url_for
 from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
 from sqlalchemy.exc import IntegrityError
-import regex
 
 picker_fields = {
     'id' : fields.Integer,
@@ -114,14 +115,6 @@ ranked_picker_fields = {
     'picker' : fields.Nested(picker_fields)
 }
 
-
-def ranked_pickers(picker_function, max_people=10):
-    return [
-               {'rank' : i,
-                'total' : picker_function(p),
-                'picker' : p}
-                for i, p in enumerate(sorted(models.Picker.query.all(), key= picker_function, reverse=True), 1)
-                if picker_function(p) and not p.is_manager][:max_people]
 
 class Leaderboards(Resource):
     def get(self):

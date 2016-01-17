@@ -10,8 +10,6 @@ block_fields = {
     'variety': fields.String,
     'orientation' : fields.String,
     'plant_year' : fields.Integer,
-    'total' : fields.Float,
-    'today_total' : fields.Float,
 }
 
 def orientation(value):
