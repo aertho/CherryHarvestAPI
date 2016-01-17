@@ -1,16 +1,11 @@
 import os
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
-try:
-    DEBUG = os.environ['DEBUG']
-except KeyError:
-    DEBUG = True
+DEBUG = os.environ['DEBUG'] if 'DEBUG' in os.environ else False
 
 ADMINS = frozenset(['alecthomas3@gmail.com'])
-try:
-    SECRET_KEY = os.environ['SECRET_KEY']
-except KeyError:
-    SECRET_KEY = "\x0f\xd6\x17y\r!>g\x14E\xbbQ\x06\x9b\x8b\xb0\xa7\xfc\xd1M'\xb8'\xee"
+
+SECRET_KEY = os.environ['SECRET_KEY'] if 'SECRET_KEY' in os.environ else os.urandom(32)
 
 SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
 
@@ -18,4 +13,4 @@ DATABASE_CONNECT_OPTIONS = {}
 
 THREADS_PER_PAGE = 8
 
-SCHEME = "http"
+SCHEME = os.environ['CHA_SCHEME'] if 'CHA_SCHEME' in os.environ else "http"
