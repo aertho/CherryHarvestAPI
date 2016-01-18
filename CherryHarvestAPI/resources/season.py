@@ -1,40 +1,33 @@
 import datetime
 
-import dateutil
-from CherryHarvestAPI.models import OrchardLoad, Lug, Block, Picker
-from dateutil import parser
+from CherryHarvestAPI.models import OrchardLoad, Block, Picker
+from CherryHarvestAPI.resources.common import totalled_blocks, ranked_pickers
+from CherryHarvestAPI.resources.day import period_fields
 from flask import url_for, redirect
-from flask.ext.restful import Resource
-from CherryHarvestAPI import app
+from flask.ext.restful import Resource, marshal_with
 
-def ranked_pickers():
-    return [{'name':'{} {}'.format(p.first_name, p.last_name),
-                       'total':p.total,
-                       'rank':i,
-                       'picker_numbers':[pn.id for pn in p.picker_numbers]}
-            for i, p in enumerate(sorted(Picker.query.all(), key=lambda x: x.total, reverse=True),1)
-            if p.total]
+
+def season(year):
+    total = sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date().year == year])
+    blocks = totalled_blocks(lambda b: Block.seasonal_total(b, year=year))
+    orchard_loads = [l for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if
+                     l.arrival_time.date().year == year]
+    pickers = ranked_pickers(lambda p: Picker.seasonal_total(p, datetime.date(year, 12, 31)))
+    return {'total' : total,
+            'totalled_blocks': blocks,
+            'orchard_loads': orchard_loads,
+            'ranked_pickers' : pickers}
 
 class Seasons(Resource):
+    @marshal_with(period_fields)
     def get(self):
         years = [2016]
-        return [{
-            'season' : y,
-            'total' : sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date().year == y]),
-            'pickers' : ranked_pickers()[:min(3,len(ranked_pickers()))],
-            'href' : url_for('season', year=y, _external=True, _scheme=app.config['SCHEME'])
-        } for y in years]
+        return [season(y) for y in years]
 
 class Season(Resource):
+    @marshal_with(period_fields)
     def get(self, year):
-        blocks = [{'variety' : b.variety, 'weight': b.total} for b in Block.query.all() if b.total]
-        total = sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date().year == year])
-        # loads = [{'time' :str(l.arrival_time), 'weight' : l.net_weight} for l in OrchardLoad.query.order_by(OrchardLoad.arrival_time).all() if l.arrival_time.date().year == year]
-        pickers = ranked_pickers()
-        return {'total' : total,
-                'blocks': blocks,
-                # 'loads': loads,
-                'pickers' : pickers}
+        return season(year)
 
 class CurrentSeason(Resource):
     def get(self):

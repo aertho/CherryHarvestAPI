@@ -1,16 +1,10 @@
 from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
+from CherryHarvestAPI.resources.common import block_fields
+from flask.ext.restful import Resource, marshal_with, reqparse, abort
 from sqlalchemy.exc import IntegrityError
-import regex
 
-block_fields = {
-    'id' : fields.Integer,
-    'variety': fields.String,
-    'orientation' : fields.String,
-    'plant_year' : fields.Integer,
-}
 
 def orientation(value):
     if value not in models.Block.ORIENTATIONS:

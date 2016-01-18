@@ -1,26 +1,14 @@
-from copy import copy
-
 import datetime
 
 from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
 from CherryHarvestAPI.models import Lug
-from CherryHarvestAPI.resources.common import simple_lug_fields
+from CherryHarvestAPI.resources.common import lug_fields, orchard_load_fields
 from dateutil import parser
-from flask import json, request
-from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
+from flask import request
+from flask.ext.restful import Resource, marshal_with, reqparse, abort
 from sqlalchemy.exc import IntegrityError
-import regex
-
-orchard_load_fields = {
-    'id' : fields.Integer,
-    'total' : fields.Integer,
-    'departure_time' : fields.DateTime(dt_format='iso8601'),
-    'arrival_time' : fields.DateTime(dt_format='iso8601'),
-    # 'destination' : fields.String,
-    # 'lugs' : fields.Url('load_lugs', absolute=True, scheme=app.config['SCHEME'])
-}
 
 load_parser = reqparse.RequestParser()
 load_parser.add_argument('id', type=int)
@@ -142,7 +130,7 @@ class OrchardLoad(Resource):
         return '', 204
 
 class OrchardLoadLugs(Resource):
-    @marshal_with(simple_lug_fields)
+    @marshal_with(lug_fields)
     def get(self, id):
         load = models.OrchardLoad.query.get(id)
         if not load:

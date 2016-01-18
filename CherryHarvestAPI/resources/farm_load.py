@@ -1,22 +1,10 @@
-from copy import copy
-
 from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI.resources.common import simple_lug_fields
+from CherryHarvestAPI.resources.common import farm_load_fields, lug_fields
 from dateutil import parser
-from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
+from flask.ext.restful import Resource, marshal_with, reqparse, abort
 from sqlalchemy.exc import IntegrityError
-import regex
-
-farm_load_fields = {
-    'id' : fields.Integer,
-    'net_weight' : fields.Float,
-    'departure_time' : fields.DateTime,
-    'arrival_time' : fields.DateTime,
-    'destination' : fields.String,
-    # 'lugs' : fields.Url('load_lugs', absolute=True, scheme=app.config['SCHEME'])
-}
 
 load_parser = reqparse.RequestParser()
 load_parser.add_argument('id', type=int)
@@ -68,7 +56,7 @@ class FarmLoad(Resource):
         return '', 204
 
 class FarmLoadLugs(Resource):
-    @marshal_with(simple_lug_fields)
+    @marshal_with(lug_fields)
     def get(self, id):
         load = models.FarmLoad.query.get(id)
         if not load:

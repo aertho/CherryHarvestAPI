@@ -4,24 +4,12 @@ import regex
 from CherryHarvestAPI import models, app
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI.resources.common import ranked_pickers
+from CherryHarvestAPI.resources.common import ranked_pickers, picker_fields, ranked_picker_fields
 from dateutil import parser
 from flask import request, url_for
-from flask.ext.restful import Resource, marshal_with, reqparse, fields, abort
+from flask.ext.restful import Resource, marshal_with, reqparse, abort
 from sqlalchemy.exc import IntegrityError
 
-picker_fields = {
-    'id' : fields.Integer,
-    'first_name' : fields.String,
-    'last_name' : fields.String,
-    # 'pay_rate' : fields.Float,
-    # 'pay_type' : fields.String,
-    # 'mobile_number' : fields.String,
-    # 'email' : fields.String,
-    'picker_numbers' : fields.List(fields.Nested({'id':fields.Integer})),
-    'card_count' : fields.Integer,
-    'href' : fields.Url('picker',  absolute=True, scheme=app.config["SCHEME"])
-}
 
 def pay_type(value):
     if value not in models.Picker.PAY_TYPES:
@@ -107,13 +95,6 @@ class Picker(Resource):
         db_session.delete(picker)
         db_session.commit()
         return '', 204
-
-
-ranked_picker_fields = {
-    'rank' : fields.Integer,
-    'total' : fields.Integer,
-    'picker' : fields.Nested(picker_fields)
-}
 
 
 class Leaderboards(Resource):

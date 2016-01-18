@@ -1,19 +1,11 @@
+from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI import models, app
 from CherryHarvestAPI.models import Tag
-from CherryHarvestAPI.resources.common import NestedWithEmpty
-from CherryHarvestAPI.resources.picker import picker_fields
+from CherryHarvestAPI.resources.common import picker_number_fields
 from flask import jsonify, request
-from flask.ext.restful import Resource, abort, fields, marshal_with, reqparse
+from flask.ext.restful import Resource, abort, marshal_with, reqparse
 from sqlalchemy.exc import IntegrityError
-
-picker_number_fields = {
-    'id' : fields.Integer,
-    'picker_id' : fields.Integer,
-    'picker' : NestedWithEmpty({'href' : fields.Url('picker', absolute=True, scheme=app.config["SCHEME"])}),
-    'card_count' : fields.Integer,
-}
 
 picker_number_parser = reqparse.RequestParser()
 picker_number_parser.add_argument('id', type=int)

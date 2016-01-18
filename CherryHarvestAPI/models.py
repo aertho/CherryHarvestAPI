@@ -85,8 +85,10 @@ class Block(Base):
     def current_season_total(self):
         return self.seasonal_total()
 
-    def seasonal_total(self, date=None):
-        if not date:
+    def seasonal_total(self, date=None, year=None):
+        if year:
+            date = datetime.date(year, 12, 31)
+        if date is None:
             date = datetime.date.today()
         return self.total(datetime.date(date.year, 1, 1), date)
 

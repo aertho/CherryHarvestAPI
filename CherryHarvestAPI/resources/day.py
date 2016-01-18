@@ -1,27 +1,13 @@
 import datetime
 
 import dateutil
-from CherryHarvestAPI.models import OrchardLoad, Lug, Block, Picker
-from CherryHarvestAPI.resources.block import block_fields
-from CherryHarvestAPI.resources.common import ranked_pickers, totalled_blocks
-from CherryHarvestAPI.resources.orchard_load import orchard_load_fields
-from CherryHarvestAPI.resources.picker import ranked_picker_fields
+from CherryHarvestAPI import app
+from CherryHarvestAPI.models import OrchardLoad
+from CherryHarvestAPI.resources.common import ranked_pickers, totalled_blocks, period_fields
 from dateutil import parser
 from flask import url_for, redirect
-from flask.ext.restful import Resource, fields, marshal_with
-from CherryHarvestAPI import app, models
+from flask.ext.restful import Resource, marshal_with
 
-totalled_block_fields = {
-    'total' : fields.Integer,
-    'block' : fields.Nested(block_fields)
-}
-
-day_fields = {
-    'total' : fields.Integer,
-    'totalled_blocks' : fields.Nested(totalled_block_fields),
-    'orchard_loads' : fields.Nested(orchard_load_fields),
-    'ranked_pickers' : fields.Nested(ranked_picker_fields),
-}
 
 class Days(Resource):
     def get(self):
@@ -35,7 +21,7 @@ class Days(Resource):
 
 
 class Day(Resource):
-    @marshal_with(day_fields)
+    @marshal_with(period_fields)
     def get(self, date):
         date = dateutil.parser.parse(date).date()
         total = sum([l.total for l in OrchardLoad.query.all() if l.arrival_time.date() == date])

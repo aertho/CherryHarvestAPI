@@ -1,31 +1,11 @@
+from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI import models, app
-from CherryHarvestAPI.resources.common import NestedWithEmpty
-from CherryHarvestAPI.resources.picker import picker_fields
-from flask import jsonify, request
-from flask.ext.restful import Resource, abort, fields, marshal_with, reqparse
+from CherryHarvestAPI.resources.common import lug_fields, lug_picker_fields
+from flask import jsonify
+from flask.ext.restful import Resource, abort, marshal_with, reqparse
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
-
-lug_fields = {
-    'id' : fields.Integer,
-    'weight' : fields.String,
-    'current_status' : fields.String,
-    # 'lug_pickers' : fields.Url('lug_lug_pickers', absolute=True, scheme=app.config["SCHEME"]),
-    'block_id' : fields.Integer,
-    'block' : NestedWithEmpty({'href' : fields.Url('block', absolute=True, scheme=app.config["SCHEME"])}),
-    'orchard_load_id' : fields.Integer,
-    'orchard_load' : NestedWithEmpty({'href' : fields.Url('orchard_load', absolute=True, scheme=app.config["SCHEME"])}),
-    'farm_load_id' : fields.Integer,
-    'farm_load' : NestedWithEmpty({'href' : fields.Url('farm_load', absolute=True, scheme=app.config["SCHEME"])}),
-}
-
-lug_picker_fields = {
-    'contribution' : fields.Float,
-    'picker' : NestedWithEmpty({'href' : fields.Url('picker', absolute=True, scheme=app.config["SCHEME"])}),
-    'lug' : NestedWithEmpty({'href':fields.Url('lug', absolute=True, scheme=app.config["SCHEME"])}),
-}
 
 def picker_id(value):
     if not models.Picker.query.get(value):

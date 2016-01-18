@@ -1,19 +1,10 @@
+from CherryHarvestAPI import models
 from CherryHarvestAPI.authorisation import auth
 from CherryHarvestAPI.database import db_session
-from CherryHarvestAPI import models, app
-from CherryHarvestAPI.resources.common import NestedWithEmpty
-from CherryHarvestAPI.resources.picker import picker_fields
-from flask import jsonify, request
-from flask.ext.restful import Resource, abort, fields, marshal_with, reqparse
+from CherryHarvestAPI.resources.common import tag_fields
+from flask import jsonify
+from flask.ext.restful import Resource, abort, marshal_with, reqparse
 from sqlalchemy.exc import IntegrityError
-
-tag_fields = {
-    'epc' : fields.String,
-    'current_picker_number_id' : fields.Integer,
-    'current_lug_id' : fields.Integer,
-    'current_picker_number' : NestedWithEmpty({'href' : fields.Url('picker_number', absolute=True, scheme=app.config["SCHEME"])}),
-    'current_lug' : NestedWithEmpty({'href' : fields.Url('lug', absolute=True, scheme=app.config["SCHEME"])})
-}
 
 tag_parser = reqparse.RequestParser()
 tag_parser.add_argument('epc')
