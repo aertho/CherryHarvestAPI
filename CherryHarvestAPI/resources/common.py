@@ -78,6 +78,8 @@ lug_fields = {
 }
 lug_picker_fields = {
     'contribution' : fields.Float,
+    'picker_id' : fields.Integer,
+    'lug_id' : fields.Integer,
     'picker' : NestedWithEmpty({'href' : fields.Url('picker', absolute=True, scheme=app.config["SCHEME"])}),
     'lug' : NestedWithEmpty({'href':fields.Url('lug', absolute=True, scheme=app.config["SCHEME"])}),
 }
